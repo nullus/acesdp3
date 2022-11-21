@@ -24,7 +24,7 @@ The difference was reasonably subtle, but colours in the render output
 appeared slightly desaturated. It was particularly noticable with shades of
 green.
 
-!(Side-by-side view of unmananged Render View and render output, showing differences in colour)[images/Unmanaged%20side%20by%20side.png]
+![Side-by-side view of unmananged Render View and render output, showing differences in colour](images/Unmanaged%20side%20by%20side.png)
 
 At the time I didn't have a good explanation of what was happening, and since
 I didn't require any rigorous colour matching I left it at that.
@@ -32,14 +32,14 @@ I didn't require any rigorous colour matching I left it at that.
 ### The obsession
 
 Recently I've had need for colour matching, on a project using ACEScg for
-colour management. So I went off to find an (OCIO config)[https://github.com/colour-science/OpenColorIO-Configs].
+colour management. So I went off to find an [OCIO config](https://github.com/colour-science/OpenColorIO-Configs).
 
 I didn't know at the time that SideFX Labs bundles a minimal ACES 1.2 config,
 but it didn't turn out to be any more helpful.
 
 Surely with colour management the situtation will be greatly improved...
 
-!(Side-by-side view of mananged Render View and render output, showing extreme differences in colour)[images/Managed%20side%20by%20side.png]
+![Side-by-side view of mananged Render View and render output, showing extreme differences in colour](images/Managed%20side%20by%20side.png)
 
 Not so much.
 
@@ -56,16 +56,16 @@ but also that there _was_ a reasonable solution. So the next steps were:
 1. Figure out how to write my own OCIO config; and
 2. Understand what colour space I was targetting.
 
-It turns out step 1 was much easier than I thought. The (documentation)[https://opencolorio.readthedocs.io/en/latest/guides/authoring/authoring.html]
-is reasonably good, and there is a great Python package (Colour)[https://github.com/colour-science/colour]
-also with (good documentation)[https://colour.readthedocs.io/en/v0.4.1/] that
+It turns out step 1 was much easier than I thought. The [documentation](https://opencolorio.readthedocs.io/en/latest/guides/authoring/authoring.html)
+is reasonably good, and there is a great Python package [Colour](https://github.com/colour-science/colour)
+also with [good documentation](https://colour.readthedocs.io/en/v0.4.1/) that
 can generate the required transformation matrices, and LUTs.
 
 The intention was always that people could build their own OCIO configs as
 required!
 
 I'm embarrased that I hadn't already realised what I discovered at step 2.
-(Display P3)[https://developer.apple.com/videos/play/wwdc2017/821/] was
+[Display P3](https://developer.apple.com/videos/play/wwdc2017/821/) was
 announced during WWDC17, and I probably even flipped through the slide deck
 at some stage back then. "Wide gamut," eh, whatever...
 
@@ -155,7 +155,9 @@ yaml
             - !<FileTransform> {src: linear_to_sRGB.spi1d, interpolation: linear}
 ```
 
-Additionally, we need a transfer function (the FileTransform above), because Display P3 is not linear. It uses the same curve as sRGB, which is close to, but subtly different from "gamma 2.2". That's why we need to use a LUT:
+Additionally, we need a transfer function (the FileTransform above), because
+Display P3 is not linear. It uses the same curve as sRGB, which is close to,
+but subtly different from "gamma 2.2". That's why we need to use a LUT:
 
 ```
 python

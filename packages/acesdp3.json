@@ -1,0 +1,9 @@
+{
+    "env": [
+        {"OCIO": "$HOUDINI_PACKAGE_PATH/acesdp3/config.ocio"},
+        {"OCIO_ACTIVE_DISPLAYS": [
+            {"houdini_os == 'macos'": "Display P3, sRGB"},
+            {"houdini_os != 'macos'": "sRGB, Display P3"}
+        ]}
+    ]
+}

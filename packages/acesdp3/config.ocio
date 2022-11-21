@@ -1,0 +1,75 @@
+ocio_profile_version: 1
+
+description: Handcrafted minimal ACES OCIO config for Houdini
+name: acesdp3-0.1.0
+
+search_path: luts
+strictparsing: true
+
+roles:
+  color_picking: sRGB
+  compositing_linear: ACEScg
+  data: Raw
+  matte_paint: sRGB
+  reference: ACES2065-1
+  rendering: ACEScg
+  scene_linear: ACEScg
+  texture_paint: sRGB
+
+displays:
+  Display P3:
+    - !<View> {name: Native, colorspace: DisplayP3}
+    - !<View> {name: Raw, colorspace: Raw}
+  sRGB:
+    - !<View> {name: Native, colorspace: sRGB}
+    - !<View> {name: Raw, colorspace: Raw}
+
+colorspaces:
+  - !<ColorSpace>
+    name: ACES2065-1
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System reference color space
+
+  - !<ColorSpace>
+    name: ACEScg
+    bitdepth: 32f
+    to_reference: !<MatrixTransform> {matrix: [0.695452241359, 0.140678696471, 0.163869062214, 0.0, 0.0447945633525, 0.859671118443, 0.0955343182103, 0.0, -0.00552588255811, 0.00402521030598, 1.00150067225, 0.0, 0.0, 0.0, 0.0, 1.0]}
+    from_reference: !<MatrixTransform> {matrix: [1.45143931607, -0.236510746889, -0.214928569308, 0.0, -0.0765537733143, 1.17622969981, -0.0996759264504, 0.0, 0.00831614842496, -0.00603244979091, 0.997716301413, 0.0, 0.0, 0.0, 0.0, 1.0]}
+
+  - !<ColorSpace>
+    name: Raw
+    bitdepth: 32f
+    isdata: true
+
+  - !<ColorSpace>
+    name: DisplayP3
+    bitdepth: 32f
+    description: |
+      Display P3
+
+      Wide gamut display. Default colour space for macOS
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.518841463066, 0.287300367658, 0.193858169319, 0.0, 0.0736116840432, 0.821299498147, 0.105088817815, 0.0, -0.000400391562709, 0.040673824827, 0.959726566735, 0.0, 0.0, 0.0, 0.0, 1.0]}
+    from_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [2.02528732757, -0.691962172309, -0.333325155452, 0.0, -0.182621506073, 1.28661600582, -0.103994499686, 0.0, 0.0085845525082, -0.054816290055, 1.04623173759, 0.0, 0.0, 0.0, 0.0, 1.0]}
+        - !<FileTransform> {src: linear_to_sRGB.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: sRGB
+    bitdepth: 32f
+    description: |
+        sRGB (IEC 61966-2-1:1999)
+
+        Default colour space for displays, and image formats
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [0.439585644154, 0.383929403014, 0.176532736366, 0.0, 0.0895395735176, 0.814749835091, 0.0956836060927, 0.0, 0.0173871832434, 0.108739114321, 0.873820587614, 0.0, 0.0, 0.0, 0.0, 1.0]}
+    from_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [2.52164942984, -1.13688855422, -0.384917593194, 0.0, -0.275213551244, 1.36970515103, -0.0943924507765, 0.0, -0.0159250100905, -0.147806368111, 1.16380581594, 0.0, 0.0, 0.0, 0.0, 1.0]}
+        - !<FileTransform> {src: linear_to_sRGB.spi1d, interpolation: linear}

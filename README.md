@@ -83,8 +83,7 @@ gives you the `colour` module.
 From Python you now have access to colour space definitions, and conversion
 methods:
 
-```
-python
+```python
 
 import colour
 
@@ -120,8 +119,7 @@ Encoding CCTF      : <function eotf_inverse_sRGB at 0x11bdd4a60>
 
 To generate a matrix for conversion from ACES to Display P3:
 
-```
-python
+```python
 
 import colour
 import numpy
@@ -143,8 +141,7 @@ Gives you matrix coefficients:
 Which go directly into an OCIO TransformMatrix (this is a minimal working
 example):
 
-```
-yaml
+```yaml
 
 - !<ColorSpace>
     name: DisplayP3
@@ -159,8 +156,7 @@ Additionally, we need a transfer function (the FileTransform above), because
 Display P3 is not linear. It uses the same curve as sRGB, which is close to,
 but subtly different from "gamma 2.2". That's why we need to use a LUT:
 
-```
-python
+```python
 
 import colour
 import numpy

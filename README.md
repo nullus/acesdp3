@@ -10,8 +10,11 @@ included, and is the default on other systems.
 
 By design this is an _incomplete_ colour management config, but Houdini is
 very light on colour management (almost colour space agnostic), and this
-seems like a reasonable place to start. There are many more interesting things
-that can be done with OpenColorIO (OCIO).
+seemed like a reasonable place to start.
+
+There are many other interesting things that can be done with
+OpenColorIO (OCIO), and this config could be used in packages other than
+Houdini, but you're on your own with that for now. Have fun!
 
 ## Why?
 
@@ -24,7 +27,7 @@ The difference was reasonably subtle, but colours in the render output
 appeared slightly desaturated. It was particularly noticable with shades of
 green.
 
-![Side-by-side view of unmananged Render View and render output, showing differences in colour](images/Unmanaged%20side%20by%20side.png)
+![Side-by-side view of unmananged Render View and render output, showing differences in colour](images/Render%20view%20unmanaged%20vs%20render%20unmanaged.png)
 
 At the time I didn't have a good explanation of what was happening, and since
 I didn't require any rigorous colour matching I left it at that.
@@ -34,17 +37,17 @@ I didn't require any rigorous colour matching I left it at that.
 Recently I've had need for colour matching, on a project using ACEScg for
 colour management. So I went off to find an [OCIO config](https://github.com/colour-science/OpenColorIO-Configs).
 
-I didn't know at the time that SideFX Labs bundles a minimal ACES 1.2 config,
+I didn't know at the time that SideFX Labs bundled a minimal ACES 1.2 config,
 but it didn't turn out to be any more helpful.
 
 Surely with colour management the situtation will be greatly improved...
 
-![Side-by-side view of mananged Render View and render output, showing extreme differences in colour](images/Managed%20side%20by%20side.png)
+![Side-by-side view of mananged Render View and render output, showing extreme differences in colour](images/Render%20view%20managed%20vs%20render%20managed.png)
 
 Not so much.
 
 Not only that, but reference images I was using as a background showed
-over-saturated colours, bringing yellows out of the beige!
+over-saturated colours, bringing yellows out of beige!
 
 What followed was a maddening journey, trying every conceivable OCIO View,
 various arrangements of OCIO Transform nodes, and numerous fruitless searches.
@@ -74,6 +77,53 @@ transfer function. The green primary being a significant difference—now the
 washed out/oversaturated green makes sense.
 
 ## How?
+
+### Install the OCIO configuration as a Houdini package
+
+1. Clone this repository
+2. Copy the contents of the [packages](packages/) directory into a local
+   Houdini packages directory. I used `~/Library/Preferences/houdini/19.5/packages`,
+   but other Houdini packages paths will work. Don't copy the packages directory
+   itself, you should end up with `~/Library/Preferences/houdini/19.5/packages/acesdp3.json`
+   etc.
+3. In Houdini Scene View, activate the Correction Toolbar in Viewport options.
+   It should look like:
+   ![Correction toolbar showing Display P3 (as display), and Native (as view)](images/Correction%20toolbar%20acesdp3.png)
+
+Now, after all that effort, surely the colours match?
+
+![Side-by-side view of mananged Render View using my OCIO config and render output, still showing differences in colour](images/Render%20view%20managed%20acesdp3%20vs%20render%20managed.png)
+
+No, actually, we're not quite there yet. However I had noticed that info in
+Finder reported the image colour profile as 'sRGB IEC61966-2.1 Linear', being
+some sort of sRGB without the transfer for displaying linear images without an
+explicit colour profile. So, after a bit more digging I found a tool to tag
+EXR files with chromaticities (primaries in CIE XYZ colour space):
+
+```
+exrstdattr -chromaticities 0.713 0.293 0.165 0.830 0.128 0.044 0.32168 0.33767 "Render managed.exr" "Render managed ACEScg primaries.exr"
+```
+
+And finally, we have a match!
+
+![Side-by-side view of mananged Render View using my OCIO config and render output, with matching colours](Render%20view%20managed%20acesdp3%20vs%20render%20tagged.png)
+
+This tool is part of [OpenEXR](https://www.openexr.com/). There is also a tool
+called `exr2aces` which you should avoid, as it applies the ACES2065-1
+primaries to the output image.
+
+Finder now shows 'AppleEXR RGB linear' as the colour profile, and the colours
+are a good match. This step shouldn't be necessary if your next stage treats
+EXR input as ACEScg by default, but I didn't want to leave that stone
+unturned.
+
+There is a slight seam in the side-by-side, where it looks like I've lost some
+precision making the comparison images. Note that all the images used here have
+been convered to sRGB for display on the web, so the differences aren't as
+noticable as you'd see on a Display P3 monitor. I've used EXR exclusively for
+render output, and I don't have a good solution for what happens to other
+"non-linear" formats (i.e. 8-bit PNG), but it's not what you want to be using
+with ACES anyway.
 
 ### The gory details
 
@@ -138,8 +188,7 @@ Gives you matrix coefficients:
 2.02528732757, -0.691962172309, -0.333325155452, 0.0, -0.182621506073, 1.28661600582, -0.103994499686, 0.0, 0.0085845525082, -0.054816290055, 1.04623173759, 0.0, 0.0, 0.0, 0.0, 1.0
 ```
 
-Which go directly into an OCIO TransformMatrix (this is a minimal working
-example):
+Which go directly into an OCIO TransformMatrix:
 
 ```yaml
 

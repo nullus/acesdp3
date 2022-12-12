@@ -4,14 +4,14 @@
 
 * [What?](#what)
 * [Why?](#why)
-    * [A curious problem](#why-problem)
-    * [The obsession](#why-obsession)
-    * [Discovery](#why-discovery)
+    * [A curious problem](#a-curious-problem)
+    * [The obsession](#the-obsession)
+    * [Discovery](#discovery)
 * [How?](#how)
-    * [Install the OCIO configuration as a Houdini package](#how-install)
-    * [The gory details](#how-details)
+* [Install the OCIO configuration as a Houdini package](#install-the-ocio-configuration-as-a-houdini-package-how-install)
+    * [The gory details](#the-gory-details)
 
-## What? {#what}
+## What?
 
 ### Handcrafted minimal ACES OCIO config for Houdini
 
@@ -27,9 +27,9 @@ There are many other interesting things that can be done with
 OpenColorIO (OCIO), and this config could be used in packages other than
 Houdini, but you're on your own with that for now. Have fun!
 
-## Why? {#why}
+## Why?
 
-### A curious problem {#why-problem}
+### A curious problem
 
 A while ago I was presented with a problem: on macOS Houdini Render View
 didn't match render output when viewed through Quick Look, or Preview.
@@ -43,7 +43,7 @@ green.
 At the time I didn't have a good explanation of what was happening, and since
 I didn't require any rigorous colour matching I left it at that.
 
-### The obsession {#why-obsession}
+### The obsession
 
 Recently I've had need for colour matching, on a project using ACEScg for
 colour management. So I went off to find an [OCIO config](https://github.com/colour-science/OpenColorIO-Configs).
@@ -63,7 +63,7 @@ over-saturated colours, bringing yellows out of beige!
 What followed was a maddening journey, trying every conceivable OCIO View,
 various arrangements of OCIO Transform nodes, and numerous fruitless searches.
 
-### Discovery {#why-discovery}
+### Discovery
 
 I knew I'd reached the limits of what could be done with this OCIO config,
 but also that there _was_ a reasonable solution. So the next steps were:
@@ -87,9 +87,9 @@ It's a combination of DCI-P3 primaries (wider gamut), D65 illuminant, and sRGB
 transfer function. The green primary being a significant difference—now the
 washed out/oversaturated green makes sense.
 
-## How? {#how}
+## How?
 
-### Install the OCIO configuration as a Houdini package {#how-install}
+### Install the OCIO configuration as a Houdini package
 
 1. Clone this repository
 2. Copy the contents of the [packages](packages/) directory into a local
@@ -136,7 +136,7 @@ render output, and I don't have a good solution for what happens to other
 "non-linear" formats (i.e. 8-bit PNG), but it's not what you want to be using
 with ACES anyway.
 
-### The gory details {#how-details}
+### The gory details
 
 With a suitable Python environment you can `pip install colour-science` which
 gives you the `colour` module.

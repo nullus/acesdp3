@@ -8,7 +8,7 @@
     * [The obsession](#the-obsession)
     * [Discovery](#discovery)
 * [How?](#how)
-* [Install the OCIO configuration as a Houdini package](#install-the-ocio-configuration-as-a-houdini-package-how-install)
+    * [Install the OCIO configuration as a Houdini package](#install-the-ocio-configuration-as-a-houdini-package)
     * [The gory details](#the-gory-details)
 
 ## What?

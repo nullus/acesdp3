@@ -106,7 +106,7 @@ exrstdattr -chromaticities 0.713 0.293 0.165 0.830 0.128 0.044 0.32168 0.33767 "
 
 And finally, we have a match!
 
-![Side-by-side view of mananged Render View using my OCIO config and render output, with matching colours](Render%20view%20managed%20acesdp3%20vs%20render%20tagged.png)
+![Side-by-side view of mananged Render View using my OCIO config and render output, with matching colours](images/Render%20view%20managed%20acesdp3%20vs%20render%20tagged.png)
 
 This tool is part of [OpenEXR](https://www.openexr.com/). There is also a tool
 called `exr2aces` which you should avoid, as it applies the ACES2065-1
